@@ -1,6 +1,5 @@
-#include <iostream>
-#include <string>
-#include <stdio.h>
+
+
 #include <time.h>
 #include <string.h>
 #include <sys/types.h>
@@ -53,5 +52,4 @@ int main()
 	}
 	return 0;
 }
-
 
