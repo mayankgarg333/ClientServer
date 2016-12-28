@@ -1,6 +1,4 @@
-// Client is single threaded, but multiple clients can connect to the server
-
-// Problem: not able to connect differnt threads of same client to the server as individual connection without different sockfd
+// Multithreaded client but creates different sockfd for each thread
 
 #include <iostream>
 #include <string>
@@ -18,6 +16,11 @@
 #include <unistd.h>
 
 using namespace std;
+void client_handler(char *filename, int sockfd);
+void client_handler2(){
+
+	cout << "I am function " << endl;
+}
 
 int main(int argc, char *argv[])
 {
@@ -26,13 +29,27 @@ int main(int argc, char *argv[])
 		exit(-1);
 	}
 	
-	char *filename=argv[1];
-	struct sockaddr_in serv_addr;	
+	char *filename;
 	int sockfd;
 	
 
 	sockfd=socket(PF_INET, SOCK_STREAM, 0);
 	cout << "scoket Id : " << sockfd << endl;
+	
+
+	for(int i=0; i<argc-1;i++)
+		thread (client_handler,argv[i+1],sockfd).detach();
+
+	while(1) {
+	}
+	return 0;	
+}
+
+
+void client_handler(char *filename, int sockfd) {
+	struct sockaddr_in serv_addr;	
+	thread::id this_id = this_thread::get_id();
+	cout << "thread id : " << this_id <<" and sockfd " << sockfd << endl;
 	
 	// populating server address
 	serv_addr.sin_family = AF_INET;
@@ -47,7 +64,6 @@ int main(int argc, char *argv[])
 	}
 	else
 		cout << " Connected to server " << endl;
-
 
 	// Read file contents in memory
         ifstream myfile(filename);
@@ -72,8 +88,5 @@ int main(int argc, char *argv[])
 		cout << "byte received: " << byte << ", msg received: " << buffer << endl;
 	}
 	cout << "FILE COMPLETE" <<endl;
-
-	while(1) {
-	}
-	return 0;	
 }
+
