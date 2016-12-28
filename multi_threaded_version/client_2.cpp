@@ -16,7 +16,7 @@
 #include <unistd.h>
 
 using namespace std;
-void client_handler(char *filename, int sockfd);
+void client_handler(char *filename);
 void client_handler2(){
 
 	cout << "I am function " << endl;
@@ -30,15 +30,11 @@ int main(int argc, char *argv[])
 	}
 	
 	char *filename;
-	int sockfd;
 	
-
-	sockfd=socket(PF_INET, SOCK_STREAM, 0);
-	cout << "scoket Id : " << sockfd << endl;
 	
 
 	for(int i=0; i<argc-1;i++)
-		thread (client_handler,argv[i+1],sockfd).detach();
+		thread (client_handler,argv[i+1]).detach();
 
 	while(1) {
 	}
@@ -46,12 +42,16 @@ int main(int argc, char *argv[])
 }
 
 
-void client_handler(char *filename, int sockfd) {
-	struct sockaddr_in serv_addr;	
+void client_handler(char *filename) {
+	int sockfd;
+	sockfd=socket(PF_INET, SOCK_STREAM, 0);
+	cout << "scoket Id : " << sockfd << endl;
+	
 	thread::id this_id = this_thread::get_id();
 	cout << "thread id : " << this_id <<" and sockfd " << sockfd << endl;
 	
 	// populating server address
+	struct sockaddr_in serv_addr;	
 	serv_addr.sin_family = AF_INET;
 	serv_addr.sin_port = htons(1250);     
 	serv_addr.sin_addr.s_addr = inet_addr("0.0.0.0");
