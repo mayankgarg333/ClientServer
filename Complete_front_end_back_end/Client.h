@@ -10,7 +10,7 @@ class Client : public Socket
 
 {
 	public:
-		Client();
+		Client(int port=1255);
 		void Handle_session(char* filename=NULL);
 		string Get_func(string key);
 		string Put_func(string key, string value);

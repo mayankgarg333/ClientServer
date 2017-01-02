@@ -5,13 +5,18 @@
 #include <mutex>     
 
 #include "Socket.h"
+#include "Socket.h"
+#include "Client.h"
+
+using namespace std;
+
 
 class Server : public Socket
 
 {
 	
 	public:
-		Server();
+		Server(int port=1255);
 		void Handle_session(int new_fd, int type);	
 		string add_to_catch(string key, string value);
 		string look_in_catch(string key);
@@ -23,6 +28,7 @@ class Server : public Socket
 		int N=5;
 		int R=3;
 		int W=3;
+
 };
 
 

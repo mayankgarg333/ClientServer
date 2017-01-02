@@ -13,10 +13,11 @@
 #include "Server.h"
 #include "Socket.h"
 #include "Client.h"
+
 using namespace std;
 
 
-Server::Server(){
+Server::Server(int port){
 
 }
 
@@ -25,8 +26,8 @@ void Server::Handle_session(int new_fd, int type){
 	// Connect to all back ends
 	if(type==0){
 		// create N socket and connect to backend as client 
-		//Client backend1;
-		//backend1.Connect_to_server();
+		 Client backends(1355);
+		//backends.Connect_to_server();
  	}
 	try{
 		int byte=1;

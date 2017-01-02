@@ -11,7 +11,7 @@ class Socket{
 	public:
 		int sockfd;
 		struct sockaddr_in socket_addr;	
-		Socket();
+		Socket(int port=1255);
 		void Bind_connection();
 		int Accept_connection();
 		int Connect_to_server();

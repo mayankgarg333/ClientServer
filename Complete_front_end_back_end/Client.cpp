@@ -14,13 +14,13 @@
 
 using namespace std;
 
-Client::Client(){
+Client::Client(int port) : Socket(port){
 
 }
 
 
 void Client::Handle_session(char* filename){
-	Client client;	
+	Client client(1250);	
 	int ans=this->Connect_to_server();
 	if(ans==-1){	
 		cout << "Server is not available, exiting" << endl;
