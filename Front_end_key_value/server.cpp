@@ -99,17 +99,7 @@ void server_handler(int new_fd){
 			payload[KEYSIZE]='\0';
 			key=string(payload);
 			cout << "KEY : " << key <<endl;
-			try{
-				value=mymap.at(key);
-			}
-			catch (const out_of_range& oor) {	
-				excep=1;
-			}
-
-			if (excep==1)
-				send(new_fd, Nav.c_str(), Nav.size() ,0);
-			else
-				send(new_fd, value.c_str(), VALUESIZE ,0);
+			
 			
 		}
 
