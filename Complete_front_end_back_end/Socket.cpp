@@ -6,8 +6,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdint.h>
-
-
+#include <exception>
+#include <thread>
 #include "Socket.h"
 
 using namespace std;
@@ -21,15 +21,17 @@ Socket::Socket(){
 
 }
 
-int Socket::Accept_connection(){
+void Socket::Bind_connection(){
 	bind(sockfd, (struct sockaddr *)&socket_addr, sizeof socket_addr);
-	listen(sockfd,10);
+	listen(sockfd,20);
+}
+
+int Socket::Accept_connection(){
 	struct sockaddr_storage their_addr;
 	socklen_t addr_size;
 	addr_size=sizeof their_addr;
-	// for loop around it later
-	int new_fd=accept(sockfd, (struct sockaddr *)&their_addr, &addr_size);
-	return new_fd;
+	return accept(sockfd, (struct sockaddr *)&their_addr, &addr_size);
+	
 }
 
 int Socket::Connect_to_server(){
@@ -39,48 +41,70 @@ int Socket::Connect_to_server(){
 
 
 void Socket::Write(string msg, int fd){
-		int32_t s = msg.size();
-		this->Write_data(fd, (const char*)&s, sizeof(int32_t));
-		//usleep(1000000);
-		this->Write_data(fd, msg.c_str(), msg.size());			// sending the msg
+		try{
+			int32_t s = msg.size();
+			this->Write_data(fd, (const char*)&s, sizeof(int32_t));
+			this->Write_data(fd, msg.c_str(), msg.size());			// sending the msg
+		}
+  		catch (exception& e)
+  		{
+    		cout << "Standard exception: " << e.what() << endl;
+  		}
 }
 
 string Socket::Read(int fd){
-		char buffer[512]={};
-		this->Read_data(fd,buffer,4);
-		int *n=(int*)buffer;
-		//cout << "size to receive: " << *n << endl; 
-		//usleep(1000000);
-		this->Read_data(fd,buffer,*n);
-		//cout << "msg received " << buffer << endl; // display the msg
-		return string(buffer);
+		try{
+			char buffer[512]={};
+			this->Read_data(fd,buffer,4);
+			int *n=(int*)buffer;
+			this->Read_data(fd,buffer,*n);
+			return string(buffer);
+		}
+  		catch (exception& e)
+  		{
+    		cout << "Standard exception: " << e.what() << endl;
+  		}
 }
 
 	
 void Socket::Read_data(int fd, char* payload,int to_read)
 {
-	int byte=0;
-	int payload_size=to_read;	
-	char buffer[512]={};		// Temperary storage
-	while(to_read>0){
-		byte=recv(fd, buffer, to_read ,0); // Wait to receive
-		memcpy(payload+payload_size-to_read,buffer,byte);
-		to_read=to_read-byte;
+	try{
+		int byte=0;
+		int payload_size=to_read;	
+		char buffer[512]={};		// Temperary storage
+		while(to_read>0){
+			byte=recv(fd, buffer, to_read ,0); // Wait to receive
+			if(byte<0) pthread_exit(NULL);
+			memcpy(payload+payload_size-to_read,buffer,byte);
+			to_read=to_read-byte;
+		}
+		payload[payload_size]='\0';
 	}
-	payload[payload_size]='\0';
+	catch (exception& e)
+	{
+		cout << "Standard exception: " << e.what() << endl;
+	}
 }
 
 
 void Socket::Write_data(int fd, const char* payload,int to_write)
-{
-	int byte=0;
-	int payload_size=to_write;	
+{	
+	try{
+		int byte=0;
+		int payload_size=to_write;	
 	
-	while(to_write>0){
-		char buffer[512]={};
-		strcpy(buffer,payload+payload_size-to_write);	 // Temperary storage
-		byte=send(fd, buffer, to_write ,0); // Wait to receive
-		to_write=to_write-byte;
+		while(to_write>0){
+			char buffer[512]={};
+			strcpy(buffer,payload+payload_size-to_write);	 // Temperary storage
+			byte=send(fd, buffer, to_write ,0); // Wait to receive
+			if(byte<0) pthread_exit(NULL);
+			to_write=to_write-byte;
+		}
+	}
+	catch (exception& e)
+	{
+		cout << "Standard exception: " << e.what() << endl;
 	}
 
 }

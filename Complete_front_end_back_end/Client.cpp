@@ -59,14 +59,14 @@ void Client::Handle_session(char* filename){
 		{	
 			myvec[1].pop_back(); // remove end line character	
 			reply=this->Get_func(myvec[1]);
-			cout << "Key send: " << myvec[1] << " ,Value received: " << reply << endl;
+			//cout << "Key send: " << myvec[1] << " ,Value received: " << reply << endl;
 			
 		}
 		else if(action=="PUT")
 		{
 			myvec[2].pop_back(); // remove end line character	
 			reply=this->Put_func(myvec[1],myvec[2]);
-			cout << "Key value send: " << myvec[1] << " , " << myvec[2 ]<< " Reply: " << reply << endl;
+			//cout << "Key value send: " << myvec[1] << " , " << myvec[2 ]<< " Reply: " << reply << endl;
 			
 		}
 		else

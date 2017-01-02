@@ -12,6 +12,7 @@ class Socket{
 		int sockfd;
 		struct sockaddr_in socket_addr;	
 		Socket();
+		void Bind_connection();
 		int Accept_connection();
 		int Connect_to_server();
 		void Write(string msg, int fd);
