@@ -5,7 +5,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <unistd.h>
-
+#include <stdint.h>
 
 
 #include "Server.h"
@@ -18,13 +18,12 @@ Server::Server(){
 
 
 void Server::Handle_session(int new_fd){
+	int byte=1;
 	while(1){
-		char buffer[512]={};
-		int byte=recv(new_fd, buffer,sizeof buffer ,0); // Wait to receive the msg
-		buffer[byte]='\0';
-		cout << "byte received: " << byte << ", msg received " << buffer << endl; // display the msg
 		
-		send(new_fd, buffer, byte ,0); // send acknowledgment
+		string r=this->Read(new_fd);
+		this->Write(r,new_fd);
+
 		if(byte==0)
 		{
 			cout << "Client connection terminated" << endl;

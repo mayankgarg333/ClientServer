@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string>
-
+#include <stdint.h>
 
 #include "Client.h"
 
@@ -34,12 +34,16 @@ void Client::Handle_session(string filename){
 	{
 		cout << "Enter the msg to pass: " <<endl;
 		cin >> msg;
-		send(this->sockfd, msg.c_str(), msg.size(),0);			// sending the msg
-		char buffer[512]={};
-		int byte=recv(this->sockfd, buffer,sizeof buffer ,0);		// waiting for the acknoledgement
-		cout << "byte received: " << byte << ", msg received " << buffer << endl;
+		string reply;
+		reply=this->Get_func(msg);
+		cout << "msg received " << reply << endl;
 	}
 }
 
 
 
+string Client::Get_func(string key){
+		this->Write(key,this->sockfd);
+		string r=this->Read(this->sockfd);
+		return r;
+}

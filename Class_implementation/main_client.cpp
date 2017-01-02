@@ -21,7 +21,8 @@ int main()
 	Client client;	
 	cout << "Client scoket Id : "  << client.sockfd << endl;
 	client.Handle_session();
-
+	
+	while(1){}
 	return 0;	
 }
 
