@@ -31,10 +31,10 @@ void Server::Handle_session(int new_fd){
 		if(action=="PUT"){
 			key	 = this->Read(new_fd);
 			value= this->Read(new_fd);
-			//this->mtx.lock();				//mutex
+			mtx.lock();				//mutex
 			//cout << "inside mutex lock" <<endl;
 			mymap[key]=value;	
-			//this->mtx.unlock();
+			mtx.unlock();
 			this->Write(success,new_fd);
 		}
 		else if(action=="GET"){
@@ -59,10 +59,5 @@ void Server::Handle_session(int new_fd){
 			}
 
 			
-		if(byte==0)
-		{
-			cout << "Client connection terminated" << endl;
-			break;
-		}
 	}
 }

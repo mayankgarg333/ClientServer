@@ -14,7 +14,8 @@ class Server : public Socket
 		Server();
 		void Handle_session(int new_fd);
 		unordered_map <string, string> mymap;
-		//mutex mtx;
+
+		mutex mtx;
 	
 };
 

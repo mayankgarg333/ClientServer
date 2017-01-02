@@ -15,7 +15,7 @@ using namespace std;
 Socket::Socket(){
 	sockfd=socket(PF_INET, SOCK_STREAM, 0);
 	socket_addr.sin_family = AF_INET;
-	socket_addr.sin_port = htons(1259);     
+	socket_addr.sin_port = htons(1260);     
 	socket_addr.sin_addr.s_addr = INADDR_ANY;
 	memset(socket_addr.sin_zero, '\0', sizeof socket_addr.sin_zero);
 
