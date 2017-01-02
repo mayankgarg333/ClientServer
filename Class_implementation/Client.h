@@ -11,9 +11,9 @@ class Client : public Socket
 {
 	public:
 		Client();
-		void Handle_session(string filename="");
+		void Handle_session(char* filename=NULL);
 		string Get_func(string key);
-		//string Put_func(string key, string value);
+		string Put_func(string key, string value);
 
 };
 

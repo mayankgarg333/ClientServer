@@ -18,6 +18,8 @@ class Socket{
 		string Read(int fd);
 		void Read_data(int fd, char* buf,	int to_read);
 		void Write_data(int fd, const char* buf,	int to_write);
+		
+
 };
 
 	

@@ -15,7 +15,7 @@ using namespace std;
 Socket::Socket(){
 	sockfd=socket(PF_INET, SOCK_STREAM, 0);
 	socket_addr.sin_family = AF_INET;
-	socket_addr.sin_port = htons(1257);     
+	socket_addr.sin_port = htons(1259);     
 	socket_addr.sin_addr.s_addr = INADDR_ANY;
 	memset(socket_addr.sin_zero, '\0', sizeof socket_addr.sin_zero);
 
@@ -41,7 +41,7 @@ int Socket::Connect_to_server(){
 void Socket::Write(string msg, int fd){
 		int32_t s = msg.size();
 		this->Write_data(fd, (const char*)&s, sizeof(int32_t));
-		usleep(1000000);
+		//usleep(1000000);
 		this->Write_data(fd, msg.c_str(), msg.size());			// sending the msg
 }
 
@@ -49,14 +49,14 @@ string Socket::Read(int fd){
 		char buffer[512]={};
 		this->Read_data(fd,buffer,4);
 		int *n=(int*)buffer;
-		cout << "size to receive: " << *n << endl; 
-		usleep(1000000);
+		//cout << "size to receive: " << *n << endl; 
+		//usleep(1000000);
 		this->Read_data(fd,buffer,*n);
-		cout << "msg received " << buffer << endl; // display the msg
+		//cout << "msg received " << buffer << endl; // display the msg
 		return string(buffer);
 }
 
-
+	
 void Socket::Read_data(int fd, char* payload,int to_read)
 {
 	int byte=0;
