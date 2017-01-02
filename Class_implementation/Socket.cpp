@@ -15,7 +15,7 @@ using namespace std;
 Socket::Socket(){
 	sockfd=socket(PF_INET, SOCK_STREAM, 0);
 	socket_addr.sin_family = AF_INET;
-	socket_addr.sin_port = htons(1254);     
+	socket_addr.sin_port = htons(1255);     
 	socket_addr.sin_addr.s_addr = INADDR_ANY;
 	memset(socket_addr.sin_zero, '\0', sizeof socket_addr.sin_zero);
 
@@ -33,5 +33,5 @@ int Socket::Accept_connection(){
 }
 
 int Socket::Connect_to_server(){
-	return connect(sockfd, (struct sockaddr*) &socket_addr, sizeof socket_addr); 
-}
+	return connect(this->sockfd, (struct sockaddr*) &socket_addr, sizeof socket_addr); 
+}	
