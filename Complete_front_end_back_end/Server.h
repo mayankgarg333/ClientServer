@@ -28,7 +28,7 @@ class Server : public Socket
 		int MAX_CATCH_SIZE=50;
 		int N=2;
 		int R=1;
-		int W=1;
+		int W=N;
 		Client *backends1;
 		Client *backends2;
 		Client **backends;

@@ -10,7 +10,7 @@ class Socket{
 	
 	public:
 		int sockfd;
-		static const int P=1265;
+		static const int P=1269;
 		struct sockaddr_in socket_addr;	
 		Socket(int port=P);
 		void Bind_connection();
@@ -24,6 +24,5 @@ class Socket{
 
 };
 
-	
 
 #endif

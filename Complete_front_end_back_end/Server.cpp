@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <unordered_map>
 #include <mutex>    
-
+#include <stdlib.h> 
 #include "Server.h"
 #include "Socket.h"
 #include "Client.h"
@@ -92,12 +92,12 @@ void Server::Handle_session(int new_fd, int type){
 string Server::add_to_catch(string key, string value){
 			//cout <<"added to local catch"<< endl;
 			string success="SUCCESS";
-			mtx.lock();				//mutex
+			//mtx.lock();				//mutex
 			mymap[key]=value;	
 			if (mymap.size()> MAX_CATCH_SIZE){
 				mymap.erase(mymap.begin());
 			}
-			mtx.unlock();
+			//mtx.unlock();
 			return success;
 }
 
@@ -115,19 +115,20 @@ string Server::look_in_catch(string key){
 
 
 // add to persistent
-string Server::add_to_persistent(string key, string value){
+string Server::add_to_persistent(string key, string value){			//used by backend
 			//cout <<"added to persistent"<< key << " " << value<<endl;
 			cout<<"-";cout << flush;
 			string success="SUCCESS";
-			mtx.lock();				//mutex
+			//mtx.lock();				//mutex
 			mymap[key]=value;	
-			mtx.unlock();
+			//mtx.unlock();
 			return success;
 }
 
 // look in persistent
-string Server::look_in_persistent(string key){
+string Server::look_in_persistent(string key){		//used by backend
 			//cout <<"Looked in persisten"<< endl;
+			cout<<".";cout << flush;
 			string not_found="NOT_FOUND";
 			try{
 				return mymap.at(key);
@@ -138,25 +139,35 @@ string Server::look_in_persistent(string key){
 }
 
 
-string Server::send_to_persistent(string key, string value){
+string Server::send_to_persistent(string key, string value){		//used by front end
 	//cout <<"send_to_persistent"<< endl;
 	cout<<".";cout << flush;
 	string success ="SUCCESS";string reply;
+	int arr[N];
+	for(int i=0;i<N;i++)
+		arr[i]=i;
+	random_shuffle(&arr[0], &arr[N]);
+
 	// front end will send data to back end 
 	// fron end will use client objects to do so
 	// Use client function Get_func and Put_func
-	for(int i=0; i<N; i++){
+	for(int i=0; i<W; i++){
 			//cout << "Placing to back end # 1" <<endl;
-			reply=backends[i]->Put_func(key,value);
+			reply=backends[arr[i]]->Put_func(key,value);
 			//cout << "print reply:" << reply <<endl; 
 	}
 	return success;
 }
 
-string Server::get_from_persistent(string key){
+string Server::get_from_persistent(string key){				// used by front end
 	//cout <<"Get from persistent"<< endl;
 	// front end will receive data to back end 
 	// fron end will use client objects to do so
-	return backends[0]->Get_func(key);
+	int arr[N];
+	for(int i=0;i<N;i++)
+		arr[i]=i;
+	random_shuffle(&arr[0], &arr[N]);
+
+	return backends[arr[0]]->Get_func(key);
 }
 
