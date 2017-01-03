@@ -26,14 +26,20 @@ int main(int argc, char * argv[])
 		cout << " type = 0 for front end, type = 1 for back end" << endl;
 		exit(-1);
 	}
-	int type=atoi(argv[0]);
+	int type=atoi(argv[1]);
+	
 	try{
-		Server frontserver;	
-		cout << "scoket Id : " << frontserver.sockfd << endl;
-		frontserver.Bind_connection();
+		// server obecject will listen at different port depending on front end or back end
+		Server *s;
+		if(type==0)
+			{s=new Server; cout << "I am Fron end" << endl;}
+		else
+			{int port=atoi(argv[2]);s=new Server(port+3000);cout << "I am back end" << endl;}
+		
+		s->Bind_connection();
 		while(1){
-			int new_fd=frontserver.Accept_connection();	
-			thread (handle_server_Session,&frontserver,new_fd,type).detach();
+			int new_fd=s->Accept_connection();	
+			thread (handle_server_Session,s,new_fd,type).detach();
 		}
 
 	}

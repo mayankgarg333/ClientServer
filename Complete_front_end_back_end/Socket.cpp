@@ -16,9 +16,10 @@ Socket::Socket(int port){
 	sockfd=socket(PF_INET, SOCK_STREAM, 0);
 	socket_addr.sin_family = AF_INET;
 	socket_addr.sin_port = htons(port);     
+	//cout<< "Port number is " << port <<endl;
 	socket_addr.sin_addr.s_addr = INADDR_ANY;
 	memset(socket_addr.sin_zero, '\0', sizeof socket_addr.sin_zero);
-
+	cout << "A socket is created with port " << port << endl;
 }
 
 void Socket::Bind_connection(){

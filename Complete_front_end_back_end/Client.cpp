@@ -14,13 +14,12 @@
 
 using namespace std;
 
-Client::Client(int port) : Socket(port){
+Client::Client(int port): Socket(port){
 
 }
 
 
 void Client::Handle_session(char* filename){
-	Client client(1250);	
 	int ans=this->Connect_to_server();
 	if(ans==-1){	
 		cout << "Server is not available, exiting" << endl;
@@ -43,6 +42,7 @@ void Client::Handle_session(char* filename){
 	// shoot the file content
 	string reply;string msg;
 	for(int i=0; i<lines.size();i++){
+		//usleep(2000000);
 		msg = lines[i];
 		// divide msg in get and put requests
 		istringstream ss(msg);
@@ -59,14 +59,14 @@ void Client::Handle_session(char* filename){
 		{	
 			myvec[1].pop_back(); // remove end line character	
 			reply=this->Get_func(myvec[1]);
-			//cout << "Key send: " << myvec[1] << " ,Value received: " << reply << endl;
+			cout << "Key send: " << myvec[1] << " ,Value received: " << reply << endl;
 			
 		}
 		else if(action=="PUT")
 		{
 			myvec[2].pop_back(); // remove end line character	
 			reply=this->Put_func(myvec[1],myvec[2]);
-			//cout << "Key value send: " << myvec[1] << " , " << myvec[2 ]<< " Reply: " << reply << endl;
+			cout << "Key value send: " << myvec[1] << " , " << myvec[2 ]<< " Reply: " << reply << endl;
 			
 		}
 		else

@@ -15,7 +15,8 @@
 
 using namespace std;
 
-
+void handle_client_Session(char* filename);
+	
 int main(int argc, char *argv[])
 {
 	
@@ -23,7 +24,7 @@ int main(int argc, char *argv[])
 	
 	for(int i=0; i<argc-1;i++){
 		filename=argv[i+1];
-		thread (&Client::Handle_session,Client(),filename).detach();
+		thread(handle_client_Session,filename).detach();
 	}
 	
 
@@ -31,4 +32,9 @@ int main(int argc, char *argv[])
 	return 0;	
 }
 
+void handle_client_Session(char* filename)
+{
+	Client client;
+	client.Handle_session(filename);
 
+}

@@ -10,8 +10,9 @@ class Socket{
 	
 	public:
 		int sockfd;
+		static const int P=1265;
 		struct sockaddr_in socket_addr;	
-		Socket(int port=1255);
+		Socket(int port=P);
 		void Bind_connection();
 		int Accept_connection();
 		int Connect_to_server();
