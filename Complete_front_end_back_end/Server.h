@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <mutex>     
+#include <sqlite3.h> 
 
 #include "Socket.h"
 #include "Client.h"
@@ -32,6 +33,12 @@ class Server : public Socket
 		Client *backends1;
 		Client *backends2;
 		Client **backends;
+		sqlite3 *db;
+		static int callback(void *data, int argc, char **argv, char **azColName);
+		void create_database();
+		string add_to_database(string key, string value);
+		string get_from_database(string key);
+		
 };
 
 

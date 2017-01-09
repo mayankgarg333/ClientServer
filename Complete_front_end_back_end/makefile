@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-pthread -std=c++11
+CFLAGS=-pthread -std=c++11 -l sqlite3
 DEPS1 = Client.h Socket.h
 OBJ1 = main_client.o Client.o Socket.o 
 DEPS2 = Server.h Socket.h Client.h
