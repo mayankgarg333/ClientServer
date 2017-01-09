@@ -89,7 +89,7 @@ void Server::Handle_session(int new_fd, int type){
 
 
 // add catch
-string Server::add_to_catch(string key, string value){
+string Server::add_to_catch(string key, string value){ //used by front end
 			//cout <<"added to local catch"<< endl;
 			string success="SUCCESS";
 			//mtx.lock();				//mutex
@@ -102,7 +102,7 @@ string Server::add_to_catch(string key, string value){
 }
 
 // look in catch
-string Server::look_in_catch(string key){
+string Server::look_in_catch(string key){			// used by front end
 			//cout <<"looked in local catch"<< endl;
 			string not_found="NOT_FOUND";
 			try{
