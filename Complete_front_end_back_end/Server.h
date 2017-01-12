@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <mutex>     
 #include <sqlite3.h> 
+#include <vector>
 
 #include "Socket.h"
 #include "Client.h"
@@ -30,9 +31,7 @@ class Server : public Socket
 		int N=2;
 		int R=1;
 		int W=N;
-		Client *backends1;
-		Client *backends2;
-		Client **backends;
+		vector <Client> backends;
 		sqlite3 *db;
 		static int callback(void *data, int argc, char **argv, char **azColName);
 		void create_database();

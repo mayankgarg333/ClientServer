@@ -35,10 +35,9 @@ void Server::Handle_session(int new_fd, int type){
 	// Connect to all back ends
 	if(type==0){
 		// create N socket and connect to backend as client 
-		backends=new Client*[N];
 		for(int i=0; i<N; i++){
-			backends[i]= new Client(3001+i);			// use backend.sockfd;
-			int ans= backends[i]->Connect_to_server();
+			backends.push_back(Client(3001+i));			// use backend.sockfd;
+			int ans= backends[i].Connect_to_server();
 			if(ans==-1){	
 				cout << "Back end is not available, exiting" << endl;
 				exit(-1);
@@ -142,7 +141,7 @@ string Server::send_to_persistent(string key, string value){		//used by front en
 	// Use client function Get_func and Put_func
 	for(int i=0; i<W; i++){
 			//cout << "Placing to back end # 1" <<endl;
-			reply=backends[arr[i]]->Put_func(key,value);
+			reply=backends[arr[i]].Put_func(key,value);
 			//cout << "print reply:" << reply <<endl; 
 	}
 	return success;
@@ -157,7 +156,7 @@ string Server::get_from_persistent(string key){				// used by front end
 		arr[i]=i;
 	random_shuffle(&arr[0], &arr[N]);
 
-	return backends[arr[0]]->Get_func(key);
+	return backends[arr[0]].Get_func(key);
 }
 
 
