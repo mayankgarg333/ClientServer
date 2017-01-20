@@ -30,11 +30,11 @@ data_file : data file need to be given who have three columns. First is the requ
 
 
 ## Code structure 
-
-		Socket class
+```
+		Socket_class
 		/			\
 client class	server class
-
+```
 
 Same class and same code is used for the front end and back end of the server. The second parameter passed as argument will decide whether it is front end or back end, and code will execute accordingly. 
 
