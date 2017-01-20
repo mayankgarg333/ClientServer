@@ -3,15 +3,15 @@ Client Server (front end and back end) implementation in C++ using blocking I/O
 
 (main_folder have the main implementation, Rest of the folders were the intermediate steps)
 
-#Build 
+##Build 
 cd main_folder
 rm server_511.db /* Remove the data base in case it is already there. This DB file stored in persistent medium at the back end of the server*/
 make clear
 make
 
-##Execution :
+#Execution :
 
-#Server
+##Server
 $ /server <server_type> <server_number>
 
 use server_type = 0 for front end
@@ -21,7 +21,7 @@ There is single front end server (primary server), but multiple back ends are av
 
 Define back end server numbers in Config.h file.
 
-#Client
+##Client
 
 Mutliple clients can be connected to the server. 
 $ /client <data_file>
@@ -29,7 +29,7 @@ $ /client <data_file>
 data_file : data file need to be given who have three columns. First is the request GET or PUT and then key, value pair according to the request. 
 
 
-# Code structure 
+## Code structure 
 
 		Socket class
 		/			\
