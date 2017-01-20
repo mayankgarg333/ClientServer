@@ -1,7 +1,7 @@
 # ClientServer
 Client Server (front end and back end) implementation in C++ using blocking I/O
 
-(main_folder have the main implementation, Rest of the folders were the intermediate steps)
+(main_folder has the main implementation, Rest of the folders were the intermediate steps)
 
 ##Build 
 cd main_folder
@@ -18,9 +18,9 @@ $ /server <server_type> <server_number>
 use server_type = 0 for front end
 use server_type = 1 for back end
 
-There is single front end server (primary server), but multiple back ends are available. Use server_number = <1,2,3..> for the servers to be started. 
+There is single front end server (primary server), but multiple back ends are available. Use server_number = <1,2,3..> for the servers to be started in server_type is 1. 
 
-Define back end server numbers in Config.h file.
+Define back end server numbers in Server.h file.
 
 ##Client
 
