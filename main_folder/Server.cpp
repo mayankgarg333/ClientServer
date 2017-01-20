@@ -1,39 +1,26 @@
-#include<iostream>
-#include <string>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <stdint.h>
-#include <algorithm>
-#include <unordered_map>
-#include <mutex>    
-#include <stdlib.h> 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sqlite3.h> 
-#include <iostream> 
-#include <cstring>
-#include <string>
-#include <string.h>
-
+#include "config.h"
 #include "Server.h"
 #include "Socket.h"
 #include "Client.h"
 	
 using namespace std;
 
-
+/***************
+constructor 
+****************/
 Server::Server(int port):  Socket(port){
-
 }
 
+/***************
+Session handler, will handle session differently for front end and back end
+type =0, front end, type =1 back end; 
+****************/
 
 void Server::Handle_session(int new_fd, int type){	
 
-	// Connect to all back ends
+	
 	if(type==0){
+		// Connect to all back ends
 		// create N socket and connect to backend as client 
 		for(int i=0; i<N; i++){
 			backends.push_back(Client(3001+i));			// use backend.sockfd;
@@ -59,18 +46,17 @@ void Server::Handle_session(int new_fd, int type){
 		string success;
 		string not_found="NOT_FOUND";
 		while(1){
-			//if(type==1){cout << "This is back end waiting for input" <<endl;}
 			action=this->Read(new_fd);
 			if(action=="PUT"){
 				key	 = this->Read(new_fd);
 				value= this->Read(new_fd);
-				if(type==0){
+				if(type==0){		// process data as front end
 					success=this->add_to_catch(key,value);
 					//send data to persistent
 					success=this->send_to_persistent(key,value);
 					
 				}
-				else{
+				else{				// process data as back end
 					success=this->add_to_persistent(key,value);
 					
 				}
@@ -78,14 +64,14 @@ void Server::Handle_session(int new_fd, int type){
 			}
 			else if(action=="GET"){
 				key	 = this->Read(new_fd);
-				if(type==0){
+				if(type==0){		// process data as front end
 					value=this->look_in_catch(key);
 					cout<< "Served by Cache"<< endl;
 					// if value= not_found get it from persistent
 					if(value==not_found)
 						value=this->get_from_persistent(key);
 				}
-				else{
+				else{				// process data as back end
 					value=this->look_in_persistent(key);
 					cout<< "Served by Persistent"<< endl;
 				}
@@ -100,10 +86,11 @@ void Server::Handle_session(int new_fd, int type){
 }
 
 
+/**************
+Add key value to map (catch)
+**************/
 
-// add catch
 string Server::add_to_catch(string key, string value){ //used by front end
-			//cout <<"added to local catch"<< endl;
 			string success="SUCCESS";
 			mtx.lock();				//mutex
 			mymap[key]=value;	
@@ -114,9 +101,11 @@ string Server::add_to_catch(string key, string value){ //used by front end
 			return success;
 }
 
-// look in catch
+/**************
+Look for value in catch
+**************/
+
 string Server::look_in_catch(string key){			// used by front end
-			//cout <<"looked in local catch"<< endl;
 			string not_found="NOT_FOUND";
 			try{
 				return mymap.at(key);
@@ -126,9 +115,10 @@ string Server::look_in_catch(string key){			// used by front end
 			}
 }
 
-
+/**************
+send key value pair to back end to add
+**************/
 string Server::send_to_persistent(string key, string value){		//used by front end
-	//cout <<"send_to_persistent"<< endl;
 	cout<<".";cout << flush;
 	string success ="SUCCESS";string reply;
 	int arr[N];
@@ -137,20 +127,22 @@ string Server::send_to_persistent(string key, string value){		//used by front en
 	random_shuffle(&arr[0], &arr[N]);
 
 	// front end will send data to back end 
-	// fron end will use client objects to do so
+	// front end will use client objects to do so
 	// Use client function Get_func and Put_func
 	for(int i=0; i<W; i++){
-			//cout << "Placing to back end # 1" <<endl;
 			reply=backends[arr[i]].Put_func(key,value);
-			//cout << "print reply:" << reply <<endl; 
 	}
 	return success;
 }
 
+
+/**************
+Get value from back end
+**************/
 string Server::get_from_persistent(string key){				// used by front end
-	//cout <<"Get from persistent"<< endl;
 	// front end will receive data to back end 
-	// fron end will use client objects to do so
+	// front end will use client objects to do so
+	// Use client function Get_func and Put_func
 	int arr[N];
 	for(int i=0;i<N;i++)
 		arr[i]=i;
@@ -160,27 +152,22 @@ string Server::get_from_persistent(string key){				// used by front end
 }
 
 
-
-// add to persistent
+/**************
+back end will write to database
+**************/
 string Server::add_to_persistent(string key, string value){			//used by backend
-			//cout <<"added to persistent"<< key << " " << value<<endl;
 			cout<<"-";cout << flush;
-			//string success="SUCCESS";
-			//mtx.lock();				//mutex
-			//mymap[key]=value;	
-			//mtx.unlock();
 			string reply=this->add_to_database(key,value);			
-			
 			return reply;
 }
 
-// look in persistent
+/**************
+back end will read from database
+**************/
 string Server::look_in_persistent(string key){		//used by backend
-			//cout <<"Looked in persisten"<< endl;
 			cout<<".";cout << flush;
 			string not_found="NOT_FOUND";
 			try{
-				//return mymap.at(key);
 				string reply=this->get_from_database(key);
 				if(reply.size())
 					return reply;
@@ -194,21 +181,12 @@ string Server::look_in_persistent(string key){		//used by backend
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 // DATABASE FUNCTIONS:
 
 
-
+/**************
+Add key value to database
+**************/
 string Server::add_to_database(string key, string value){
 	char *zErrMsg = 0;
     int  rc;
@@ -241,7 +219,9 @@ string Server::add_to_database(string key, string value){
 }
 
 
-
+/**************
+Get value from database
+**************/
 string Server::get_from_database(string key){
 	char *zErrMsg = 0;
     int  rc;
@@ -258,7 +238,9 @@ string Server::get_from_database(string key){
 
 }
 
-
+/**************
+Create/conenct to database
+**************/
 void Server::create_database(){
 	cout << "inside create_database " <<endl;
 	int  rc;
@@ -280,17 +262,23 @@ void Server::create_database(){
 	
 	strcpy(sql, s.c_str());
 	/* Execute SQL statement */
-	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-	if( rc != SQLITE_OK ){
-		fprintf(stderr, "SQL error: %s\n", zErrMsg);
-		sqlite3_free(zErrMsg);
-	}else{
-		fprintf(stdout, "Table created successfully\n");
-	}	
+	while(1){
+		rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+		if( rc != SQLITE_OK ){
+			fprintf(stderr, "SQL error: %s\n", zErrMsg);
+			sqlite3_free(zErrMsg);
+			usleep(10000);
+		}else{
+			fprintf(stdout, "Table created successfully\n");
+			break;
+		}	
+	}
 
 }
 
-
+/**************
+Callback function for database
+**************/
 int Server::callback(void *data, int argc, char **argv, char **azColName){
    char * sal= (char*)data;
    //cout << "ARGC" << argc << endl;

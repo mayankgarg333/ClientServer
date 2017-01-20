@@ -1,24 +1,18 @@
-#include<iostream>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <string>
-#include <stdint.h>
-#include <vector>
-#include <fstream>
-#include <sstream>
-
+#include "config.h"
 #include "Client.h"
 
 using namespace std;
 
-Client::Client(int port): Socket(port){
 
+/****************
+Constructor 
+***************/ 
+Client::Client(int port): Socket(port){
 }
 
-
+/***************
+Session handler : Will read the file ans service the get and put requests
+*/ 
 void Client::Handle_session(char* filename){
 	int ans=this->Connect_to_server();
 	if(ans==-1){	
@@ -80,7 +74,9 @@ void Client::Handle_session(char* filename){
 }
 
 
-
+/**************
+Get function will request the server to send back the value of the key, In no key is found then value will be NOT FOUND 
+***************/ 
 string Client::Get_func(string key){
 		//cout<< "Inside Get function:"<< endl;
 		string action="GET";
@@ -89,6 +85,10 @@ string Client::Get_func(string key){
 		string r=this->Read(this->sockfd);
 		return r;
 }
+
+/**************
+Put function will place the key value pair in server, and retuen SUCCESS or FAILURE depending on if the operation is successful or not. 
+****************/ 
 
 string Client::Put_func(string key, string value){
 		//cout<< "Inside Put function:"<< endl;

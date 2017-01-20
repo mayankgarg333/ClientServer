@@ -1,16 +1,4 @@
-
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <cstdlib>
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <thread>
-
+#include "config.h"
 #include "Client.h"
 
 using namespace std;
@@ -24,7 +12,11 @@ int main(int argc, char *argv[])
 	
 	for(int i=0; i<argc-1;i++){
 		filename=argv[i+1];
-		thread(handle_client_Session,filename).detach();
+		/* Launch a thread for each session
+		A session in the input file provided.. if  input files are provided then 5 threads will run and each will creat its own client object, Multiple client can also run simultaneously in different terminals with multiple sessions
+		*/
+		thread(handle_client_Session,filename).detach();		
+	
 	}
 	
 
@@ -34,7 +26,7 @@ int main(int argc, char *argv[])
 
 void handle_client_Session(char* filename)
 {
-	Client client;
-	client.Handle_session(filename);
+	Client client;	// create client object
+	client.Handle_session(filename);	// launch the handdle session to serve requests
 
 }
