@@ -12,8 +12,9 @@ make
 #Execution :
 
 ##Server
+```
 $ /server <server_type> <server_number>
-
+```
 use server_type = 0 for front end
 use server_type = 1 for back end
 
@@ -24,8 +25,9 @@ Define back end server numbers in Config.h file.
 ##Client
 
 Mutliple clients can be connected to the server. 
+```
 $ /client <data_file>
-
+```
 data_file : data file need to be given who have three columns. First is the request GET or PUT and then key, value pair according to the request. 
 
 
